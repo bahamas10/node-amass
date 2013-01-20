@@ -1,0 +1,21 @@
+{
+  "name": "amass",
+  "description": "Amass system information and expose it as JSON",
+  "author": "Dave Eddy <dave@daveeddy.com> (http://www.daveeddy.com)",
+  "version": "0.0.0",
+  "bin": {
+    "amass": "./bin/amass.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "amass",
+    "ohai",
+    "facter",
+    "puppet",
+    "chef"
+  ],
+  "license": "MIT"
+}
