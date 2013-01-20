@@ -26,8 +26,10 @@ amass(function(errors, data) {
 });
 ```
 
-`data` is an object representing all of the data that was amassed, and errors,
-if set, is an array of any errors encountered from any of the plugins.
+* `data` is an object representing all of the system information that was
+amassed.
+* `errors`, if set, is an array of any errors encountered from any of
+the plugins.
 
 Command line tool
 
