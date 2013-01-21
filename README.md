@@ -36,7 +36,7 @@ Command line tool
     $ amass | json os.arch
     x64
     $ amass | json os.type
-    x64
+    Darwin
     $ amass | json os.cpus.0
     {
       "model": "MacBookAir5,2",
