@@ -17,5 +17,9 @@
     "puppet",
     "chef"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "latest": "~0.1.0",
+    "posix-getopt": "~1.0.0"
+  }
 }
