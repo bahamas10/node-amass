@@ -12,7 +12,6 @@
 var amass = require('../');
 
 var getopt = require('posix-getopt');
-var latest = require('latest');
 
 var package = require('../package.json');
 
@@ -46,7 +45,7 @@ while ((option = parser.getopt()) !== undefined) {
   switch (option.option) {
     case 'h': console.log(usage()); process.exit(0);
     case 'u': // check for updates
-      latest.checkupdate(package, function(ret, msg) {
+      require('latest').checkupdate(package, function(ret, msg) {
         console.log(msg);
         process.exit(ret);
       });
