@@ -19,6 +19,9 @@
     "chef"
   ],
   "license": "MIT",
+  "engines": {
+    "node": ">=0.8"
+  },
   "dependencies": {
     "latest": "~0.1.0",
     "posix-getopt": "~1.0.0",
