@@ -20,6 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "latest": "~0.1.0",
-    "posix-getopt": "~1.0.0"
+    "posix-getopt": "~1.0.0",
+    "exec": "0.0.4"
   }
 }

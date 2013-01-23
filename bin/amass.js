@@ -14,9 +14,9 @@ var path = require('path');
 
 var amass = require('../');
 var getopt = require('posix-getopt');
+var plugins = require('../plugins');
 
 var package = require('../package.json');
-var pluginsdir = '/var/amass/node_modules';
 
 /**
  * Usage
@@ -29,23 +29,38 @@ function usage() {
     '',
     'Gather system information and expose it as JSON',
     '',
-    '-h, --help        print this message and exit',
-    '-u, --updates     check for available updates',
-    '-v, --version     print the version number and exit'
+    'plugins are installed to `' + plugins.dir + '\' and as such, may',
+    'require root or super-user privileges',
+    '',
+    '-a, --add <name>      add the plugin <name> to amass',
+    '-h, --help            print this message and exit',
+    '-l, --list            list the currently installed plugins',
+    '-l, --remove <name>   remove the plugin <name> from amass',
+    '-u, --updates         check for available updates',
+    '-v, --version         print the version number and exit'
   ].join('\n');
 }
 
 // command line arguments
 var options = [
+  'a(add)',
   'h(help)',
+  'l(list)',
+  'r(remove)',
   'u(updates)',
   'v(version)'
 ].join('');
 var parser = new getopt.BasicParser(options, process.argv);
+var add = false;
+var list = false;
+var remove = false;
 var option;
 while ((option = parser.getopt()) !== undefined) {
   switch (option.option) {
+    case 'a': add = true; break;
     case 'h': console.log(usage()); process.exit(0);
+    case 'l': list = true; break;
+    case 'r': remove = true; break;
     case 'u': // check for updates
       require('latest').checkupdate(package, function(ret, msg) {
         console.log(msg);
@@ -56,18 +71,30 @@ while ((option = parser.getopt()) !== undefined) {
     default: console.error(usage()); process.exit(1); break;
   }
 }
+var args = process.argv.slice(parser.optind());
 
-// try to load the plugin
-var plugins;
+// handle add, remove, or list
+function cb(err, out, code) {
+  if (out) process.stdout.write(out);
+  if (err) process.stderr.write(err);
+  process.exit(code);
+}
+if (add) return plugins.add(args, cb);
+if (list) return plugins.list(cb);
+if (remove) return plugins.remove(args, cb);
+
+// try to load the plugins
+var pluginsavail;
 try {
-  var pluginnames = fs.readdirSync(pluginsdir);
-  plugins = pluginnames.map(function(name) {
-    return path.join(pluginsdir, name);
+  var pluginnames = fs.readdirSync(plugins.dir);
+  pluginsavail = pluginnames.map(function(name) {
+    // return the full path
+    return path.join(plugins.dir, name);
   });
 } catch (e) {}
 
 // amass!
-amass(plugins, function(errors, data) {
+amass(pluginsavail, function(errors, data) {
   if (errors) errors.forEach(function(err) {
     console.error(err);
   });
