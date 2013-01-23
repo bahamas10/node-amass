@@ -35,7 +35,7 @@ function usage() {
     '-a, --add <name>      add the plugin <name> to amass',
     '-h, --help            print this message and exit',
     '-l, --list            list the currently installed plugins',
-    '-l, --remove <name>   remove the plugin <name> from amass',
+    '-r, --remove <name>   remove the plugin <name> from amass',
     '-u, --updates         check for available updates',
     '-v, --version         print the version number and exit'
   ].join('\n');
