@@ -10,10 +10,6 @@ Command line tool
 
     npm install -g amass
 
-Node module
-
-    npm install amass
-
 Usage
 -----
 
