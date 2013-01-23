@@ -17,22 +17,6 @@ Node module
 Usage
 -----
 
-As a module
-
-``` js
-var amass = require('amass');
-amass(function(errors, data) {
-    console.log(data);
-});
-```
-
-* `data` is an object representing all of the system information that was
-amassed.
-* `errors`, if set, is an array of any errors encountered from any of
-the plugins.
-
-Command line tool
-
     $ amass | json os.arch
     x64
     $ amass | json os.type
@@ -72,8 +56,47 @@ Plugins
 *still in beta*
 
 All plugins will be stored in `/var/amass`.  The idea is that plugins should be standalone
-node modules that expose useful system information, and as such, be installed in node_modules
+node modules that expose useful system information, and as such, be installed in node\_modules
 in `/var/amass`.
+
+#### how to
+
+You may need to `sudo` some of these commands.
+
+Adding a plugin ([amass-etc-passwd](https://github.com/bahamas10/amass-etc-passwd))
+
+    $ amass --add amass-etc-passwd
+    amass-etc-passwd@0.0.0 node_modules/amass-etc-passwd
+    └── etc-passwd@0.1.1 (lazylines@1.0.0)
+
+Now, when you run `amass`, you'll see a new root key of `etc-passwd`
+
+View the installed plugins
+
+    $ amass --list
+    amass@0.0.4 /private/var/amass
+    └─┬ amass-etc-passwd@0.0.0
+      └─┬ etc-passwd@0.1.1
+        └── lazylines@1.0.0
+
+That shows you the installed plugins and their dependencies.  If the output
+looks familiar to you sharp eye ;), The output is straight from `npm`.
+
+Now, remove the plugin
+
+    $ amass --remove amass-etc-passwd
+    $ echo $?
+    0
+
+Notice no output is generated (just like `npm remove`), but that the exit code
+is properly set.
+
+List the plugins once more and see that it is empty
+
+    $ amass --list
+    amass@0.0.4 /private/var/amass
+    └── (empty)
+
 
 License
 -------

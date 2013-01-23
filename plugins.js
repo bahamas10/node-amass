@@ -40,6 +40,12 @@ function _check_exists() {
       version: package.version,
       name: package.name
     };
-    fs.writeFileSync(p, JSON.stringify(data));
+    try {
+      fs.writeFileSync(p, JSON.stringify(data));
+    } catch (e) {
+      console.error(e.message);
+      console.error('do you have permissions to do this?');
+      process.exit(1);
+    }
   }
 }
