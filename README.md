@@ -6,8 +6,6 @@ Amass system information and expose it as JSON
 Installation
 ------------
 
-Command line tool
-
     npm install -g amass
 
 Usage
@@ -30,6 +28,18 @@ Usage
       }
     }
 
+By default, amass exposes 3 keys
+
+    amass | json -k
+    [
+      "amass",
+      "os",
+      "process"
+    ]
+
+
+You can extend this by writing [plugins](#plugins)
+
 Why?
 ----
 
@@ -49,13 +59,11 @@ Also, speed.
 Plugins
 -------
 
-*still in beta*
+### *still in beta*
 
-All plugins will be stored in `/var/amass`.  The idea is that plugins should be standalone
-node modules that expose useful system information, and as such, be installed in node\_modules
-in `/var/amass`.
+Extend the functionality of `amass` by writing/using plugins
 
-#### how to
+### how to add plugins
 
 You may need to `sudo` some of these commands.
 
@@ -76,7 +84,7 @@ View the installed plugins
         └── lazylines@1.0.0
 
 That shows you the installed plugins and their dependencies.  If the output
-looks familiar to you sharp eye ;), The output is straight from `npm`.
+looks familiar to you, it's because it is straight from `npm`.
 
 Now, remove the plugin
 
@@ -92,6 +100,43 @@ List the plugins once more and see that it is empty
     $ amass --list
     amass@0.0.4 /private/var/amass
     └── (empty)
+
+### write your own plugins
+
+As of right now, a module must be published to npm before it can be used,
+or symlinked to `/var/amass/node_modules`.  Let's create a simple hello world
+plugin.
+
+`/var/amass/node_modules/my_plugin/index.js`
+``` js
+module.exports = function(cb) {
+    var data = {
+        "name": "dave",
+        "hello": "world"
+    };
+    cb(null, data);
+};
+```
+
+There you go, that's it.  Now, when you run `amass`, you will see your data.
+
+    $ amass | json my_plugin
+    {
+      "name": "dave",
+      "hello": "world"
+    }
+
+To write a module, have your `exports` be a function that takes a single
+argument (the callback), and call it with your data (or any error.
+The key that the data will have in the `amass` output is the name of your
+module.
+
+### technical details
+
+1. Plugins are stored in `/var/amass`, this directory is created lazily
+when invoked with an option that pertains to plugins.
+2. Plugins should be standalone node modules that expose useful system
+information, and as such, be installed in node\_modules in `/var/amass`.
 
 
 License
