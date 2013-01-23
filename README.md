@@ -66,6 +66,15 @@ Also, speed.
     user    0m0.053s
     sys     0m0.010s
 
+Plugins
+-------
+
+*still in beta*
+
+All plugins will be stored in `/var/amass`.  The idea is that plugins should be standalone
+node modules that expose useful system information, and as such, be installed in node_modules
+in `/var/amass`.
+
 License
 -------
 
