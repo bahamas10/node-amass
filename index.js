@@ -28,7 +28,7 @@ function amass(plugins, cb) {
   var errors = [];
   data.amass = {
     version: package.version,
-    plugins: plugins
+    plugins: plugins || []
   };
 
   // try to load the plugins
