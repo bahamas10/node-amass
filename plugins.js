@@ -7,6 +7,7 @@ var package = require('./package.json');
 var basedir = '/var/amass'
 var dir = path.join(basedir, 'node_modules');
 var p = path.join(basedir, 'package.json');
+var readme = path.join(basedir, 'README.md');
 
 module.exports.basedir = dir;
 module.exports.dir = dir;
@@ -22,7 +23,7 @@ function add(args, cb) {
 }
 function list(cb) {
   _check_exists();
-  var command = ['npm', 'ls']
+  var command = ['npm', 'ls', '--depth', '0']
   exec(command, {cwd: basedir}, cb);
 }
 function remove(args, cb) {
@@ -35,6 +36,7 @@ function _check_exists() {
   if (!fs.existsSync(p)) {
     try {
       fs.mkdirSync(basedir);
+      fs.writeFileSync(readme, '');
     } catch (e) {}
     var data = {
       version: package.version,
