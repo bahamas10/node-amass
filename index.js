@@ -8,6 +8,9 @@
  * License: MIT
  */
 
+var path = require('path');
+
+var package = require('./package.json');
 var modules = {
   os: require('./lib/os'),
   process: require('./lib/process')
@@ -15,10 +18,25 @@ var modules = {
 
 module.exports = amass;
 
-function amass(cb) {
+function amass(plugins, cb) {
+  if (typeof plugins === 'function') {
+    cb = plugins;
+    plugins = null;
+  }
+
   var data = {};
   var errors = [];
+  data.amass = {
+    version: package.version,
+    plugins: plugins
+  };
 
+  // try to load the plugins
+  if (plugins) {
+    plugins.forEach(function(plugin) {
+      modules[path.basename(plugin).replace(/^amass-/, '')] = require(plugin);
+    });
+  }
   var keys = Object.keys(modules);
   var len = keys.length;
 
@@ -26,8 +44,11 @@ function amass(cb) {
   var i = 0;
   keys.forEach(function(mod) {
     modules[mod](function(err, d) {
-      if (err) return errors.push(err);
-      data[mod] = d;
+      if (err) {
+        errors.push(err);
+      } else {
+        data[mod] = d;
+      }
       if (++i === len) done();
     });
   });
@@ -37,3 +58,4 @@ function amass(cb) {
     cb(errors.length ? errors : null, data);
   }
 }
+

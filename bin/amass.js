@@ -9,11 +9,14 @@
  * License: MIT
  */
 
-var amass = require('../');
+var fs = require('fs');
+var path = require('path');
 
+var amass = require('../');
 var getopt = require('posix-getopt');
 
 var package = require('../package.json');
+var pluginsdir = '/var/amass/node_modules';
 
 /**
  * Usage
@@ -39,7 +42,6 @@ var options = [
   'v(version)'
 ].join('');
 var parser = new getopt.BasicParser(options, process.argv);
-
 var option;
 while ((option = parser.getopt()) !== undefined) {
   switch (option.option) {
@@ -55,10 +57,19 @@ while ((option = parser.getopt()) !== undefined) {
   }
 }
 
-amass(function(errors, data) {
+// try to load the plugin
+var plugins;
+try {
+  var pluginnames = fs.readdirSync(pluginsdir);
+  plugins = pluginnames.map(function(name) {
+    return path.join(pluginsdir, name);
+  });
+} catch (e) {}
+
+// amass!
+amass(plugins, function(errors, data) {
   if (errors) errors.forEach(function(err) {
     console.error(err);
   });
-  data.amass = package.version;
   console.log(JSON.stringify(data, null, 2));
 });
