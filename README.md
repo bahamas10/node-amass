@@ -79,9 +79,7 @@ View the installed plugins
 
     $ amass --list
     amass@0.0.4 /private/var/amass
-    └─┬ amass-etc-passwd@0.0.0
-      └─┬ etc-passwd@0.1.1
-        └── lazylines@1.0.0
+    └── amass-etc-passwd@0.0.0
 
 That shows you the installed plugins and their dependencies.  If the output
 looks familiar to you, it's because it is straight from `npm`.
