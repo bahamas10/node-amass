@@ -129,6 +129,12 @@ argument (the callback), and call it with your data (or any error.
 The key that the data will have in the `amass` output is the name of your
 module.
 
+### testing
+
+You can test a module you are writing using `amass -t`
+
+    amass -t <jsfile or module dir>
+
 ### technical details
 
 1. Plugins are stored in `/var/amass`, this directory is created lazily

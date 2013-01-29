@@ -9,7 +9,6 @@
  * License: MIT
  */
 
-var fs = require('fs');
 var path = require('path');
 
 var amass = require('../');
@@ -35,6 +34,7 @@ function usage() {
     '-h, --help            print this message and exit',
     '-l, --list            list the currently installed plugins',
     '-r, --remove <name>   remove the plugin <name> from amass',
+    '-t, --test <module>   test a module, takes a directory or js file',
     '-u, --updates         check for available updates',
     '-v, --version         print the version number and exit'
   ].join('\n');
@@ -46,6 +46,7 @@ var options = [
   'h(help)',
   'l(list)',
   'r(remove)',
+  't:(test)',
   'u(updates)',
   'v(version)'
 ].join('');
@@ -53,6 +54,7 @@ var parser = new getopt.BasicParser(options, process.argv);
 var add = false;
 var list = false;
 var remove = false;
+var test;
 var option;
 while ((option = parser.getopt()) !== undefined) {
   switch (option.option) {
@@ -60,6 +62,7 @@ while ((option = parser.getopt()) !== undefined) {
     case 'h': console.log(usage()); process.exit(0);
     case 'l': list = true; break;
     case 'r': remove = true; break;
+    case 't': test = option.optarg; break;
     case 'u': // check for updates
       require('latest').checkupdate(package, function(ret, msg) {
         console.log(msg);
@@ -83,6 +86,15 @@ if (add || list || remove) {
   if (add) return plugins.add(args, cb);
   if (list) return plugins.list(cb);
   if (remove) return plugins.remove(args, cb);
+}
+
+console.dir(test);
+if (test) {
+  require(path.resolve(test))(function(err, data) {
+    if (err) throw err;
+    console.log(JSON.stringify(data, null, 2));
+  });
+  return;
 }
 
 // amass!
