@@ -2,7 +2,7 @@
   "name": "amass",
   "description": "Amass system information and expose it as JSON",
   "author": "Dave Eddy <dave@daveeddy.com> (http://www.daveeddy.com)",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "bin": {
     "amass": "./bin/amass.js"
   },
