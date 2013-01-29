@@ -11,6 +11,7 @@
 var path = require('path');
 
 var package = require('./package.json');
+var plugins = require('./plugins').plugins;
 var modules = {
   os: require('./lib/os'),
   process: require('./lib/process')
@@ -18,25 +19,18 @@ var modules = {
 
 module.exports = amass;
 
-function amass(plugins, cb) {
-  if (typeof plugins === 'function') {
-    cb = plugins;
-    plugins = null;
-  }
-
+function amass(cb) {
   var data = {};
   var errors = [];
   data.amass = {
     version: package.version,
-    plugins: plugins || []
+    plugins: plugins
   };
 
-  // try to load the plugins
-  if (plugins) {
-    plugins.forEach(function(plugin) {
-      modules[path.basename(plugin).replace(/^amass-/, '')] = require(plugin);
-    });
-  }
+  plugins.forEach(function(plugin) {
+    modules[path.basename(plugin).replace(/^amass-/, '')] = require(plugin);
+  });
+
   var keys = Object.keys(modules);
   var len = keys.length;
 

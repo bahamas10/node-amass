@@ -14,7 +14,6 @@ var path = require('path');
 
 var amass = require('../');
 var getopt = require('posix-getopt');
-var plugins = require('../plugins');
 
 var package = require('../package.json');
 
@@ -29,8 +28,8 @@ function usage() {
     '',
     'Gather system information and expose it as JSON',
     '',
-    'plugins are installed to `' + plugins.dir + '\' and as such, may',
-    'require root or super-user privileges',
+    'plugins are installed to `/var/amass/node_modules` and as such, may',
+    'require root or super-user privileges to modify',
     '',
     '-a, --add <name>      add the plugin <name> to amass',
     '-h, --help            print this message and exit',
@@ -73,28 +72,21 @@ while ((option = parser.getopt()) !== undefined) {
 }
 var args = process.argv.slice(parser.optind());
 
-// handle add, remove, or list
-function cb(err, out, code) {
-  if (out) process.stdout.write(out);
-  if (err) process.stderr.write(err);
-  process.exit(code);
+if (add || list || remove) {
+  var plugins = require('../plugins');
+  // handle add, remove, or list
+  function cb(err, out, code) {
+    if (out) process.stdout.write(out);
+    if (err) process.stderr.write(err);
+    process.exit(code);
+  }
+  if (add) return plugins.add(args, cb);
+  if (list) return plugins.list(cb);
+  if (remove) return plugins.remove(args, cb);
 }
-if (add) return plugins.add(args, cb);
-if (list) return plugins.list(cb);
-if (remove) return plugins.remove(args, cb);
-
-// try to load the plugins
-var pluginsavail;
-try {
-  var pluginnames = fs.readdirSync(plugins.dir);
-  pluginsavail = pluginnames.map(function(name) {
-    // return the full path
-    return path.join(plugins.dir, name);
-  });
-} catch (e) {}
 
 // amass!
-amass(pluginsavail, function(errors, data) {
+amass(function(errors, data) {
   if (errors) errors.forEach(function(err) {
     console.error(err);
   });

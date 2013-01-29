@@ -9,29 +9,45 @@ var dir = path.join(basedir, 'node_modules');
 var p = path.join(basedir, 'package.json');
 var readme = path.join(basedir, 'README.md');
 
-module.exports.basedir = dir;
+var commands = {
+  add: ['npm', 'install', '-S'],
+  list: ['npm', 'ls', '--depth', '0'],
+  remove: ['npm', 'remove', '-S']
+};
+
+// try to load the plugins
+var plugins = [];
+try {
+  var pluginnames = fs.readdirSync(dir);
+  plugins = pluginnames.map(function(name) {
+    // return the full path
+    return path.join(dir, name);
+  });
+} catch (e) {}
+
+// exports
+module.exports.plugins = plugins;
 module.exports.dir = dir;
+module.exports.add = _npm_do('add');
+module.exports.list = _npm_do('list');
+module.exports.remove = _npm_do('remove');
 
-module.exports.add = add;
-module.exports.list = list;
-module.exports.remove = remove;
-
-function add(args, cb) {
-  _check_exists();
-  var command = ['npm', 'install', '-S'].concat(args);
-  exec(command, {cwd: basedir}, cb);
-}
-function list(cb) {
-  _check_exists();
-  var command = ['npm', 'ls', '--depth', '0']
-  exec(command, {cwd: basedir}, cb);
-}
-function remove(args, cb) {
-  _check_exists();
-  var command = ['npm', 'remove', '-S'].concat(args);
-  exec(command, {cwd: basedir}, cb);
+// the entry point, return a function to call
+function _npm_do(action) {
+  return function(args, cb) {
+    if (typeof args === 'function') {
+      cb = args;
+      args = null;
+    }
+    _check_exists();
+    var cmd = commands[action];
+    if (args) cmd = cmd.concat(args);
+    exec(cmd, {cwd: basedir}, cb);
+  };
 }
 
+// check for, and create, the necessary directories/files
+// for plugins
 function _check_exists() {
   if (!fs.existsSync(p)) {
     try {
@@ -40,6 +56,7 @@ function _check_exists() {
     } catch (e) {}
     var data = {
       version: package.version,
+      private: true,
       name: package.name
     };
     try {
