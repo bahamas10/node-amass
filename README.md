@@ -11,22 +11,9 @@ Installation
 Usage
 -----
 
-    $ amass | json os.arch
-    x64
-    $ amass | json os.type
-    Darwin
-    $ amass | json os.cpus.0
-    {
-      "model": "MacBookAir5,2",
-      "speed": 1800,
-      "times": {
-        "user": 105979210,
-        "nice": 0,
-        "sys": 35549920,
-        "idle": 314724130,
-        "irq": 0
-      }
-    }
+![usage](http://instacode.linology.info/file/31969)
+
+(hosted on http://instacode.linology.info/31969)
 
 By default, amass exposes 3 keys
 
