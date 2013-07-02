@@ -88,7 +88,6 @@ if (add || list || remove) {
   if (remove) return plugins.remove(args, cb);
 }
 
-console.dir(test);
 if (test) {
   require(path.resolve(test))(function(err, data) {
     if (err) throw err;
